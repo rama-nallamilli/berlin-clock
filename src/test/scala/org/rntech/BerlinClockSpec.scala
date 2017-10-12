@@ -1,30 +1,29 @@
 package org.rntech
 
+import org.rntech.BerlinClock._
 import org.scalacheck.Gen
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.{FreeSpec, Matchers}
-import BerlinClockSpec._
-import BerlinClock._
 
-class BerlinClockSpec extends FreeSpec
-  with Matchers
-  with GeneratorDrivenPropertyChecks {
+class BerlinClockSpec extends FreeSpec with Matchers with GeneratorDrivenPropertyChecks {
 
   "The Berlin Clock" - {
 
     "generates a time representation" - {
 
       "the seconds lamp should blink 'Off' for odd seconds" in {
+        val oddNumberGen = Gen.chooseNum(1, 59) suchThat (_ % 2 != 0)
         forAll(oddNumberGen) { odd =>
           val clock = generate(Time(hours = 0, minutes = 0, seconds = odd))
-          clock.secondLamp shouldBe LampState(Off)
+          clock.secondLamp shouldBe Off
         }
       }
 
       "the seconds lamp should blink 'Yellow' for even seconds" in {
+        val evenNumberGen = Gen.chooseNum(0, 59) suchThat (_ % 2 == 0)
         forAll(evenNumberGen) { even =>
           val clock = generate(Time(hours = 0, minutes = 0, seconds = even))
-          clock.secondLamp shouldBe LampState(Yellow)
+          clock.secondLamp shouldBe Yellow
         }
       }
 
@@ -79,13 +78,8 @@ class BerlinClockSpec extends FreeSpec
     }
   }
 
-  private def lampState(colour: LampColour = Red, on: Int, off: Int) = List.fill(on)(LampState(colour)) ++ List.fill(off)(LampState(Off))
+  private def lampState(colour: LampColour = Red, on: Int, off: Int) = List.fill(on)(colour) ++ List.fill(off)(Off)
 
-  private def lampState(colours: Seq[LampColour], off: Int) = colours.map(LampState) ++ List.fill(off)(LampState(Off))
+  private def lampState(colours: Seq[LampColour], off: Int) = colours ++ List.fill(off)(Off)
 
-}
-
-object BerlinClockSpec {
-  private val oddNumberGen = Gen.chooseNum(1, 59) suchThat (_ % 2 != 0)
-  private val evenNumberGen = Gen.chooseNum(0, 59) suchThat (_ % 2 == 0)
 }

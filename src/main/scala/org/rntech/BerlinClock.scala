@@ -8,18 +8,16 @@ case object Red extends LampColour
 
 case object Off extends LampColour
 
-case class LampState(colour: LampColour)
-
-case class BerlinClockView(topHour: List[LampState],
-                           bottomHour: List[LampState],
-                           topMinute: List[LampState],
-                           bottomMinute: List[LampState],
-                           secondLamp: LampState) {
+case class BerlinClockView(topHour: List[LampColour],
+                           bottomHour: List[LampColour],
+                           topMinute: List[LampColour],
+                           bottomMinute: List[LampColour],
+                           secondLamp: LampColour) {
 
   override def toString: String = {
-    val renderLine = (l: List[LampState]) =>  l.map(_.colour).mkString(" | ")
+    val renderLine = (l: List[LampColour]) =>  l.mkString(" | ")
 
-    s"""${secondLamp.colour}
+    s"""${secondLamp}
        |${renderLine(topHour)}
        |${renderLine(bottomHour)}
        |${renderLine(topMinute)}
@@ -36,11 +34,11 @@ object BerlinClock {
       Yellow
 
   private val allLampsOn = BerlinClockView(
-    topHour = List.fill(4)(LampState(Red)),
-    bottomHour = List.fill(4)(LampState(Red)),
-    topMinute = List.tabulate(11)(i => LampState(getMinuteLampColour(i))),
-    bottomMinute = List.fill(4)(LampState(Yellow)),
-    secondLamp = LampState(Yellow)
+    topHour = List.fill(4)(Red),
+    bottomHour = List.fill(4)(Red),
+    topMinute = List.tabulate(11)(i => getMinuteLampColour(i)),
+    bottomMinute = List.fill(4)(Yellow),
+    secondLamp = Yellow
   )
 
   def renderBerlinClock(hours: Int, minutes: Int, seconds: Int): String = {
@@ -52,10 +50,10 @@ object BerlinClock {
 
   def generate(time: Time): BerlinClockView = {
 
-    def switchLamps(numberToKeepOn: Int, lamps: List[LampState]) =
+    def switchLamps(numberToKeepOn: Int, lamps: List[LampColour]) =
       lamps.zipWithIndex.map {
         case (lamp, index) if index + 1 <= numberToKeepOn => lamp
-        case _@(lamp, _) => lamp.copy(colour = Off)
+        case _@(lamp, _) => Off
       }
 
     BerlinClockView(
@@ -63,7 +61,7 @@ object BerlinClock {
       bottomHour = switchLamps(numberToKeepOn = time.hours % 5, lamps = allLampsOn.bottomHour),
       topMinute = switchLamps(numberToKeepOn = time.minutes / 5, lamps = allLampsOn.topMinute),
       bottomMinute = switchLamps(numberToKeepOn = time.minutes % 5, lamps = allLampsOn.bottomMinute),
-      secondLamp = LampState(colour = if (time.seconds % 2 == 0) Yellow else Off)
+      secondLamp = if (time.seconds % 2 == 0) Yellow else Off
     )
   }
 }

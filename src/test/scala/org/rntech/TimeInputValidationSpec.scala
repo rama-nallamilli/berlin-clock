@@ -4,9 +4,7 @@ import org.scalacheck.Gen
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.{FreeSpec, Matchers}
 
-class TimeInputValidationSpec extends FreeSpec
-  with Matchers
-  with GeneratorDrivenPropertyChecks {
+class TimeInputValidationSpec extends FreeSpec with Matchers with GeneratorDrivenPropertyChecks {
 
   "Time input validation" - {
 
