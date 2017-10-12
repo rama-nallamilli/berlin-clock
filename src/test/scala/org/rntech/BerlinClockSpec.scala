@@ -10,9 +10,9 @@ class BerlinClockSpec extends FreeSpec
   with Matchers
   with GeneratorDrivenPropertyChecks {
 
-  "A Berlin Clock" - {
+  "The Berlin Clock" - {
 
-    "generates a time" - {
+    "generates a time representation" - {
 
       "the seconds lamp should blink 'Off' for odd seconds" in {
         forAll(oddNumberGen) { odd =>
@@ -61,16 +61,17 @@ class BerlinClockSpec extends FreeSpec
     }
 
     "renders a time" - {
-      "the berlin clock should be rendered when called with a valid time" in {
+
+      "should be rendered with a valid time" in {
         val output = renderBerlinClock(hours = 13, minutes = 21, seconds = 3)
-        output shouldBe """|Off|
+        output shouldBe """Off
                           |Red | Red | Off | Off
                           |Red | Red | Red | Off
                           |Yellow | Yellow | Red | Yellow | Off | Off | Off | Off | Off | Off | Off
                           |Yellow | Off | Off | Off""".stripMargin
       }
 
-      "the berlin clock should throw an error when called with an invalid time" in {
+      "should throw an error with an invalid time" in {
         assertThrows[InvalidTimeInput] {
           renderBerlinClock(hours = -213, minutes = 0, seconds = 31)
         }

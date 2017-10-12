@@ -1,6 +1,5 @@
 package org.rntech
 
-
 sealed trait LampColour
 
 case object Yellow extends LampColour
@@ -20,7 +19,7 @@ case class BerlinClockView(topHour: List[LampState],
   override def toString: String = {
     val renderLine = (l: List[LampState]) =>  l.map(_.colour).mkString(" | ")
 
-    s"""|${secondLamp.colour}|
+    s"""${secondLamp.colour}
        |${renderLine(topHour)}
        |${renderLine(bottomHour)}
        |${renderLine(topMinute)}
@@ -47,9 +46,7 @@ object BerlinClock {
   def renderBerlinClock(hours: Int, minutes: Int, seconds: Int): String = {
     TimeParseValidator.parseTime(hours, minutes, seconds) match {
       case Right(time) => generate(time).toString
-      case Left(error) =>
-        // would usually keep Either[E,T] up to application boundaries, throw here to keep interface requested
-        throw error
+      case Left(error) => throw error
     }
   }
 
